@@ -27,19 +27,46 @@ def generate_pdf(items):
 
     for item in items:
         try:
-            response = requests.get(item['image'], stream=True)
+            # Intentar descargar la imagen original
+            response = requests.get(item['image'], stream=True, timeout=10)
             img = Image.open(response.raw).convert("RGB")
+        except Exception as e:
+            print(f"Error con la imagen original: {e}")
+            try:
+                # Cargar imagen por defecto
+                fallback_url = "https://firebasestorage.googleapis.com/v0/b/atypicaltracker.appspot.com/o/Common%2FempyImage_general.png?alt=media&token=43bdbfd5-4ff0-43f5-9873-da084f5c17be"
+                response = requests.get(fallback_url, stream=True, timeout=10)
+                img = Image.open(response.raw).convert("RGB")
+            except Exception as fallback_error:
+                print(f"Error cargando la imagen fallback: {fallback_error}")
+                img = None
 
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-                img.save(tmp.name, format="PNG")
-                rl_img = RLImage(tmp.name, width=65, height=65)
+        if img:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".webp") as tmp:
+                img.save(tmp.name, format="WEBP")
+                rl_img = RLImage(tmp.name, width=40, height=40)
                 data.append([item['name'], item['color'], str(item['stock']), rl_img])
                 temp_files.append(tmp.name)
-        except Exception as e:
-            print(f"Error con la imagen: {e}")
+        else:
             data.append([item['name'], item['color'], str(item['stock']), ""])
+        print(f"Item {item['name']}: {item['color']} agregada")
 
-    table = Table(data, colWidths=[150, 150, 60, 120], repeatRows=1)
+    # for item in items:
+    #     try:
+    #         response = requests.get(item['image'], stream=True)
+    #         img = Image.open(response.raw).convert("RGB")
+
+    #         with tempfile.NamedTemporaryFile(delete=False, suffix=".webp") as tmp:
+    #             img.save(tmp.name, format="WEBP")
+    #             rl_img = RLImage(tmp.name, width=65, height=65)
+    #             data.append([item['name'], item['color'], str(item['stock']), rl_img])
+    #             temp_files.append(tmp.name)
+            
+    #     except Exception as e:
+    #         print(f"Error con la imagen: {e}")
+    #         data.append([item['name'], item['color'], str(item['stock']), ""])
+
+    table = Table(data, colWidths=[160, 160, 60, 140], repeatRows=1)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
