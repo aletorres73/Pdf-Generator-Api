@@ -17,7 +17,7 @@ def create_pdf(items: List[ItemPdf]):
     pdf_buffer = generate_pdf([item.model_dump() for item in items])
 
     print("PDF generado en", time.time() - start, "segundos")
-    print("Tamaño del pdf: ",pdf_buffer.__sizeof__()/1024, "KB")
+    print("Tamaño del pdf: ",pdf_buffer.__sizeof__()/(1024*1024), "MB")
 
     return StreamingResponse(
         io.BytesIO(pdf_buffer.getvalue()),

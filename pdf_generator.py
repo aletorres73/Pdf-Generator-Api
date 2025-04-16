@@ -51,21 +51,6 @@ def generate_pdf(items):
             data.append([item['name'], item['color'], str(item['stock']), ""])
         print(f"Item {item['name']}: {item['color']} agregada")
 
-    # for item in items:
-    #     try:
-    #         response = requests.get(item['image'], stream=True)
-    #         img = Image.open(response.raw).convert("RGB")
-
-    #         with tempfile.NamedTemporaryFile(delete=False, suffix=".webp") as tmp:
-    #             img.save(tmp.name, format="WEBP")
-    #             rl_img = RLImage(tmp.name, width=65, height=65)
-    #             data.append([item['name'], item['color'], str(item['stock']), rl_img])
-    #             temp_files.append(tmp.name)
-            
-    #     except Exception as e:
-    #         print(f"Error con la imagen: {e}")
-    #         data.append([item['name'], item['color'], str(item['stock']), ""])
-
     table = Table(data, colWidths=[160, 160, 60, 140], repeatRows=1)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
