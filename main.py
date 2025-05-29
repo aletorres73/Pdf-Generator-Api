@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
+from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 from typing import List
-from models import ItemPdf
+from models import ItemPdf, StockModel
 from pdf_generator import generate_pdf
 import io
 import time
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")  # Carpeta donde van las plantillas
 
 MAX_ITEMS = 20  # Límite máximo de ítems permitidos
 
@@ -33,3 +37,10 @@ def create_pdf(items: List[ItemPdf]):
         media_type="application/pdf",
         headers={"Content-Disposition": "inline; filename=stock_report.pdf"}
     )
+
+@app.post("/preview-html", response_class=HTMLResponse)
+async def preview_html(items: List[StockModel], request: Request):
+    return templates.TemplateResponse("stock_preview.html", {
+        "request": request,
+        "items": items
+    })

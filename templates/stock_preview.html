@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>📄Reporte de stock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            background: linear-gradient(to right, #ffecd2, #fcb69f);
+        }
+
+        .product-block {
+            margin-bottom: 25px;
+        }
+
+        .product-header {
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            flex: 1 1 50px;
+            max-width: 100px;
+            border: 3px solid #8f8f8f;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+
+        .item img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+
+        .item-name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: center;
+            font-size: 0.85em;
+        }
+
+        .price-text {
+            font-size: 0.9em;
+            margin: 2px 0;
+        }
+
+        .meta-info {
+            font-size: 0.85em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MDC | 📄 Reporte de stock</h1>
+
+    {% for model in items %}
+    <div class="product-block">
+        <div class="product-header">
+            <!-- <small style="font-weight: normal;">(ID: {{ model.id }})</small> dentro del h3 -->
+            <h3>{{ model.name }}</h3>
+            <div class="meta-info">Marca: {{ model.brand }} | Categoría: {{ model.category }} | Género: {{ model.gender }}</div>
+            <p class="price-text">Precio minorista: ${{ model.prices['retail'] }}</p>
+            <p class="price-text">Precio mayorista: ${{ model.prices['wholesale'] }}</p>
+        </div>
+        <div class="grid">
+            {% for color_group in model.stockByColors %}
+            <div class="item">
+                <img src="{{ color_group.imageUrl }}" alt="{{ color_group.imageName }}">
+                <div class="item-name">{{ color_group.color }}</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            {% for s in color_group.size %}
+                            <th>{{ s.size }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for s in color_group.size %}
+                            <td>{{ s.quantity }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>
