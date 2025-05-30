@@ -1,15 +1,8 @@
 from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
-from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from typing import List
 from models import StockModel
-from pdf_generator import generate_pdf
-from xhtml2pdf import pisa
-from weasyprint import HTML
-import io
-import time
 import os
 
 app = FastAPI()
