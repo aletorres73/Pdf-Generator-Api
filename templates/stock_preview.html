@@ -10,50 +10,54 @@
         }
 
         .product-block {
-            margin-bottom: 25px;
+            margin-bottom: 5px;
         }
 
         .product-header {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
         }
 
         .item {
-            width: 200px;
-            border: 1px solid #999;
+            max-width: 98px;
+            max-height: 180px;
+            border: 2px solid #999;
             border-radius: 8px;
-            padding: 10px;
             box-sizing: border-box;
             text-align: center;
         }
 
         .item img {
-            width: 100px;
-            height: 100px;
+            max-width: 98px;
+            max-height: 80px;
+            width: 100%;
+            height: auto;
             object-fit: contain;
             display: block;
             margin: 0 auto 5px auto;
+            border-radius: 8px;
         }
 
         .item-name {
             font-weight: bold;
             font-size: 12px;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .table {
-            width: 180px;
+            width: 80px;
             margin: 0 auto;
-            border-collapse: collapse;
+            border-collapse: separate;
         }
 
         .table th,
         .table td {
+            border-radius: 16px;
             border: 1px solid #666;
             padding: 2px 4px;
             text-align: center;
@@ -73,12 +77,12 @@
     </style>
 </head>
 <body>
-    <h1>MDC | 📄 Reporte de stock</h1>
+    <h3>MDC | 📄 Reporte de stock</h3>
 
     {% for model in items %}
     <div class="product-block">
         <div class="product-header">
-            <h3>{{ model.name }}</h3>
+            <h6>{{ model.name }}</h6>
             <div class="meta-info">Marca: {{ model.brand }} | Categoría: {{ model.category }} | Género: {{ model.gender }}</div>
             <p class="price-text">Precio minorista: ${{ model.prices['retail'] }}</p>
             <p class="price-text">Precio mayorista: ${{ model.prices['wholesale'] }}</p>
