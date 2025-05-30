@@ -2,12 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>📄Reporte de stock</title>
+    <title>📄 Reporte de stock</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 10px;
-            background: linear-gradient(to right, #ffecd2, #fcb69f);
         }
 
         .product-block {
@@ -20,58 +19,55 @@
 
         .grid {
             display: flex;
-            gap: 20px;
             flex-wrap: wrap;
+            gap: 20px;
         }
 
         .item {
-            flex: 1 1 50px;
-            max-width: 100px;
-            border: 3px solid #8f8f8f;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            border: 1px solid #999;
+            border-radius: 8px;
+            padding: 10px;
             box-sizing: border-box;
+            text-align: center;
         }
-
 
         .item img {
-            width: 100%;
-            height: auto;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
+            display: block;
+            margin: 0 auto 5px auto;
         }
-
 
         .item-name {
             font-weight: bold;
             font-size: 12px;
-            margin-top: 5px;
-            text-align: center;
-            word-wrap: break-word;
+            margin-bottom: 5px;
         }
 
         .table {
-            width: 100%;
+            width: 180px;
+            margin: 0 auto;
             border-collapse: collapse;
-            margin-top: 10px;
         }
 
         .table th,
         .table td {
-            border: 1px solid #ddd;
-            padding: 4px;
+            border: 1px solid #666;
+            padding: 2px 4px;
             text-align: center;
-            font-size: 0.85em;
+            font-size: 10px;
         }
 
         .price-text {
-            font-size: 0.9em;
+            font-size: 12px;
             margin: 2px 0;
         }
 
         .meta-info {
-            font-size: 0.85em;
-            color: #555;
+            font-size: 11px;
+            color: #333;
             margin-bottom: 5px;
         }
     </style>
@@ -82,7 +78,6 @@
     {% for model in items %}
     <div class="product-block">
         <div class="product-header">
-            <!-- <small style="font-weight: normal;">(ID: {{ model.id }})</small> dentro del h3 -->
             <h3>{{ model.name }}</h3>
             <div class="meta-info">Marca: {{ model.brand }} | Categoría: {{ model.category }} | Género: {{ model.gender }}</div>
             <p class="price-text">Precio minorista: ${{ model.prices['retail'] }}</p>
