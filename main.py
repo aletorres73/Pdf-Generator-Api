@@ -1,43 +1,46 @@
-from fastapi import FastAPI
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import FileResponse
 from typing import List
 from models import StockModel
 import os
+from weasyprint import HTML
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")  # Carpeta donde van las plantillas
+templates = Jinja2Templates(directory="templates")
 
-MAX_ITEMS = 20  # Límite máximo de ítems permitidos
+PDF_OUTPUT_PATH = "pdf/preview.pdf"
 
-from fastapi.responses import FileResponse
-
-@app.post("/preview-html")
-async def preview_html(items: List[StockModel], request: Request):
+@app.post("/preview-html-pdf")
+async def preview_pdf(items: List[StockModel], request: Request):
     try:
-        print("🔧 Iniciando generación de HTML...")
+        print("🔧 Iniciando generación de PDF...")
 
-        # Renderizado de plantilla
-        print("🕒 Renderizando plantilla...")
+        # Renderizado de plantilla HTML
+        print("🕒 Renderizando plantilla HTML para PDF...")
         template_response = templates.TemplateResponse("stock_preview.html", {"request": request, "items": items})
+        # await template_response.render()  # Necesario para forzar el render del contenido
         html_str = template_response.body.decode("utf-8")
 
-        # Guardamos el HTML como archivo
-        html_output_path = "html/preview.html"
-        os.makedirs(os.path.dirname(html_output_path), exist_ok=True)
-        with open(html_output_path, "w", encoding="utf-8") as f:
-            f.write(html_str)
-
-        print(f"✅ HTML guardado en {html_output_path}")
+        print("✅ Plantilla HTML renderizada correctamente.")
         print("📄 Fragmento del HTML generado:")
         print(html_str[:300])
 
+        # Crear directorio para PDF si no existe
+        os.makedirs(os.path.dirname(PDF_OUTPUT_PATH), exist_ok=True)
+
+        # Generar PDF con WeasyPrint
+        print("🖨️ Generando archivo PDF con WeasyPrint...")
+        HTML(string=html_str, base_url=".").write_pdf(PDF_OUTPUT_PATH)
+
+        print(f"✅ PDF guardado exitosamente en {PDF_OUTPUT_PATH}")
+
         return FileResponse(
-            path=html_output_path,
-            media_type="text/html",
-            filename="preview.html"
+            path=PDF_OUTPUT_PATH,
+            media_type="application/pdf",
+            filename="reporte_stock.pdf"
         )
 
     except Exception as e:
-        print(f"🔥 Excepción durante la generación del HTML: {e}")
+        print(f"🔥 Excepción durante la generación del PDF: {e}")
         return {"error": str(e)}
