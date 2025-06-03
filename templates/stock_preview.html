@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>📄 Reporte de stock</title>
     <style>
+        @page {
+            size: A4;
+            margin-top: 0.5cm;
+            margin-right: 1.5cm;
+<<<<<<< HEAD
+            margin-bottom: 0.5  cm;
+=======
+            margin-bottom: 0.5cm;
+>>>>>>> 2ca41ed05d520e4cf58f4f355292aebdc5848001
+            margin-left: 1.5cm;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 10px;
+            /* margin: 10px; */
         }
 
         .product-block {
@@ -25,7 +38,7 @@
 
         .item {
             max-width: 98px;
-            max-height: 180px;
+            max-height: 1300px;
             border: 2px solid #999;
             border-radius: 8px;
             box-sizing: border-box;
@@ -33,20 +46,21 @@
         }
 
         .item img {
-            max-width: 98px;
+            max-width: 150px;
             max-height: 80px;
-            width: 100%;
             height: auto;
             object-fit: contain;
             display: block;
             margin: 0 auto 5px auto;
             border-radius: 8px;
+            background-image: "/static/images/sin_foto.png";
         }
 
         .item-name {
             font-weight: bold;
-            font-size: 12px;
+            font-size: 8px;
             margin-bottom: 2px;
+            padding: 4px;
         }
 
         .table {
@@ -76,6 +90,7 @@
         }
     </style>
 </head>
+
 <body>
     <h3>MDC | 📄 Reporte de stock</h3>
 
@@ -83,14 +98,15 @@
     <div class="product-block">
         <div class="product-header">
             <h6>{{ model.name }}</h6>
-            <div class="meta-info">Marca: {{ model.brand }} | Categoría: {{ model.category }} | Género: {{ model.gender }}</div>
+            <div class="meta-info">Marca: {{ model.brand }} | Categoría: {{ model.category }} | Género: {{ model.gender
+                }}</div>
             <p class="price-text">Precio minorista: ${{ model.prices['retail'] }}</p>
             <p class="price-text">Precio mayorista: ${{ model.prices['wholesale'] }}</p>
         </div>
         <div class="grid">
             {% for color_group in model.stockByColors %}
             <div class="item">
-                <img src="{{ color_group.imageUrl }}" alt="{{ color_group.imageName }}">
+                <img src="{{ color_group.imageUrl }}" alt="{{ color_group.imageNameUrl }}">
                 <div class="item-name">{{ color_group.color }}</div>
                 <table class="table">
                     <thead>
@@ -114,4 +130,5 @@
     </div>
     {% endfor %}
 </body>
+
 </html>
