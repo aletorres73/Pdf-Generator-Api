@@ -1,12 +1,25 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 from typing import List
 from models import StockModel
 from weasyprint import HTML
 from pathlib import Path
 import os
+from PIL import Image
+from io import BytesIO
+import requests
+import base64
+from utils.image_utils import resize_and_encode_image
+
+def resize_and_encode_image(url, size=(300, 300)):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content)).convert("RGB")
+    img.thumbnail(size)
+    buffer = BytesIO()
+    img.save(buffer, format="JPEG", quality=70)
+    return base64.b64encode(buffer.getvalue()).decode()
+
 
 app = FastAPI()
 
@@ -17,44 +30,25 @@ PDF_OUTPUT_PATH = BASE_DIR / "pdf/preview.pdf"
 # Configurar Jinja2 y filtros
 templates = Jinja2Templates(directory="templates")
 
-# Filtro para usar imagen por defecto si la ruta viene vacía
-# def default_image(image_url: str) -> str:
-#     if not image_url or image_url.strip().lower() in ["", "null", "none"]:
-#         return "/static/images/sin_foto.png"
-#     return image_url
-
-# Registrar el filtro en Jinja2
-# templates.env.filters["default_image"] = default_image
-
-# Montar la carpeta de archivos estáticos
-# app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
-
 @app.post("/preview-html-pdf")
 async def preview_pdf(items: List[StockModel], request: Request):
     try:
         print("🔧 Iniciando generación de PDF...")
 
-        # Reemplazar imágenes vacías por defecto
         # DEFAULT_IMAGE_PATH = "/static/images/sin_foto.png"
+        # Reemplazar imágenes por versión base64 optimizada
         for item in items:
             for color_group in item.stockByColors:
-                if not color_group.imageUrl or color_group.imageUrl.strip().lower() in ['', "null", "none"]:
-                    color_group.imageUrl = (BASE_DIR / "static/images/sin_foto.png").as_uri()
+                if color_group.imageUrl and color_group.imageUrl.strip().lower() not in ["", "null", "none"]:
+                    color_group.imageBase64 = resize_and_encode_image(color_group.imageUrl)
+                else:
+                    # Si no hay imagen, podés usar una imagen por defecto en base64 también
+                    color_group.imageBase64 = ""
 
         # Renderizar plantilla HTML
         print("🕒 Renderizando plantilla HTML para PDF...")
-        template_response = templates.TemplateResponse(
-            "stock_preview.html",
-            {"request": request, "items": items}
-        )
 
-        html_str = template_response.body.decode("utf-8")
-        
-        # # Guardar el HTML generado en un archivo para revisión temporal
-        # html_preview_path = PDF_OUTPUT_PATH.parent / "preview_stock.html"
-        # with open(html_preview_path, "w", encoding="utf-8") as f:
-        #     f.write(html_str)
-        # print(f"📝 HTML guardado para vista previa en {html_preview_path}")
+        html_str = templates.get_template("stock_preview.html").render({"items": items})
 
 
         print("✅ Plantilla HTML renderizada correctamente.")

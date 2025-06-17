@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class StockSize(BaseModel):
     size: int
@@ -10,7 +11,8 @@ class StockColorGroup(BaseModel):
     # first: bool
     imageUrl: str
     imageName: str
-
+    imageBase64: Optional[str] = None
+                           
 class Prices(BaseModel):
     retail: float
     wholesale: float
