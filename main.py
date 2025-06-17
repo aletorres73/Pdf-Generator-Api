@@ -38,7 +38,7 @@ async def preview_pdf(items: List[StockModel], request: Request):
         # DEFAULT_IMAGE_PATH = "/static/images/sin_foto.png"
         for item in items:
             for color_group in item.stockByColors:
-                if not color_group.imageUrl or color_group.image.strip().lower() in ['', "null", "none"]:
+                if not color_group.imageUrl or color_group.imageUrl.strip().lower() in ['', "null", "none"]:
                     color_group.imageUrl = (BASE_DIR / "static/images/sin_foto.png").as_uri()
 
         # Renderizar plantilla HTML
