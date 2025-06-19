@@ -90,7 +90,7 @@
 </head>
 
 <body>
-    <h3>MDC | 📄 Reporte de stock</h3>
+    <h3>MAT | 📄 Reporte de stock</h3>
 
     {% for model in items %}
     <div class="product-block">
@@ -104,12 +104,7 @@
         <div class="grid">
             {% for color_group in model.stockByColors %}
             <div class="item">
-                {% if color_group.imageBase64 %}
                 <img src="data:image/webp;base64,{{ color_group.imageBase64 }}" />
-                {% else %}
-                <img src="/static/images/sin_foto.webp" />
-                {% endif %}
-
                 <div class="item-name">{{ color_group.color }}</div>
                 <table class="table">
                     <thead>
